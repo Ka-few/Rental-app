@@ -1,0 +1,141 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-4);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-10);
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  gap: var(--spacing-2);
+}
+
+.emptyIcon {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  margin-bottom: var(--spacing-2);
+}
+
+.unitCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.unitNumber {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-main);
+}
+
+.statusBadge {
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.iconButton {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: var(--spacing-1);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.iconButton:hover {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+}
+
+.iconButton.danger:hover {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.Vacant {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.Occupied {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.Reserved {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.UnderMaintenance {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-3);
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+}
+
+.bold {
+  font-weight: 500;
+  color: var(--color-text-main);
+}
+
+.amount {
+  font-weight: 600;
+  color: var(--color-primary);
+}

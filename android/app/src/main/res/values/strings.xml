@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">RentalApp</string>
+    <string name="title_activity_main">RentalApp</string>
+    <string name="package_name">com.rental.app</string>
+    <string name="custom_url_scheme">com.rental.app</string>
+</resources>

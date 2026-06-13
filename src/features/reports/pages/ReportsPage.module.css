@@ -1,0 +1,177 @@
+.container {
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+/* Range Selector */
+.rangeSelector {
+  display: flex;
+  gap: var(--spacing-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-1);
+}
+
+.rangeBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.rangeBtn:hover {
+  background: var(--color-background);
+  color: var(--color-text-main);
+}
+
+.rangeBtn.active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* Summary Cards */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-4);
+}
+
+@media (min-width: 900px) {
+  .summaryGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.summaryCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.summaryLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.summaryValue {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+/* Chart card */
+.chartCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-5);
+}
+
+.chartTitle {
+  margin: 0 0 var(--spacing-4);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.emptyChart {
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tables */
+.tableCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-5);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  margin-top: var(--spacing-2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.table th {
+  text-align: left;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-main);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background-color: var(--color-surface-hover);
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.amount {
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.danger {
+  color: var(--color-danger);
+  font-weight: 600;
+}
