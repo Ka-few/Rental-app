@@ -6,6 +6,7 @@ export interface Tenant {
   emergency_contact: string;
   next_of_kin: string;
   occupation: string;
+  status: 'Active' | 'Inactive';
   created_at: number;
 }
 

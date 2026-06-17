@@ -27,3 +27,52 @@
   gap: var(--spacing-4);
   margin-top: var(--spacing-4);
 }
+
+/* ── Unit allocation section ── */
+.allocSection {
+  margin-top: var(--spacing-2);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.allocToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  border: 1.5px dashed var(--color-border);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  align-self: flex-start;
+}
+
+.allocToggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light, rgba(99, 102, 241, 0.06));
+}
+
+.allocToggleActive {
+  border-style: solid;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light, rgba(99, 102, 241, 0.08));
+}
+
+.allocFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  background: var(--color-surface-hover, rgba(255,255,255,0.04));
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}

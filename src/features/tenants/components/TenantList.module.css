@@ -53,6 +53,29 @@
   color: var(--color-text-main);
 }
 
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.statusActive {
+  background-color: var(--color-success-light, rgba(16, 185, 129, 0.1));
+  color: var(--color-success, #10b981);
+}
+
+.statusInactive {
+  background-color: var(--color-danger-light, rgba(239, 68, 68, 0.1));
+  color: var(--color-danger, #ef4444);
+}
+
 .actions {
   display: flex;
   gap: var(--spacing-2);
@@ -81,6 +104,11 @@
   color: var(--color-danger);
 }
 
+.iconButton.warning:hover {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
 .details {
   display: flex;
   flex-direction: column;
@@ -96,4 +124,28 @@
   gap: var(--spacing-2);
   font-size: var(--font-size-sm);
   color: var(--color-text-main);
+}
+
+/* ── Unit allocation badge ── */
+.unitBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: 9999px;
+  background: var(--color-primary-light, rgba(99, 102, 241, 0.1));
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.unitBadgeVacant {
+  background: var(--color-surface-hover, rgba(255, 255, 255, 0.05));
+  color: var(--color-text-muted);
+}
+
+.unitRent {
+  margin-left: var(--spacing-1);
+  opacity: 0.75;
+  font-size: 0.72rem;
 }

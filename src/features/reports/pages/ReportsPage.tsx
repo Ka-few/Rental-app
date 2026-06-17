@@ -4,6 +4,7 @@ import { fetchProperties } from '../../properties/slices/propertySlice';
 import { fetchUnits } from '../../units/slices/unitSlice';
 import { fetchTenants } from '../../tenants/slices/tenantSlice';
 import { fetchPayments } from '../../payments/slices/paymentSlice';
+import { fetchSettings } from '../../settings/slices/settingsSlice';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
@@ -21,6 +22,7 @@ export default function ReportsPage() {
   const { units } = useAppSelector(s => s.units);
   const { tenants } = useAppSelector(s => s.tenants);
   const { payments } = useAppSelector(s => s.payments);
+  const { data: settings } = useAppSelector(s => s.settings);
 
   const [range, setRange] = useState<RangeKey>('30');
 
@@ -29,6 +31,7 @@ export default function ReportsPage() {
     dispatch(fetchUnits());
     dispatch(fetchTenants());
     dispatch(fetchPayments());
+    dispatch(fetchSettings());
   }, [dispatch]);
 
   const filteredPayments = useMemo(() => {
@@ -62,25 +65,31 @@ export default function ReportsPage() {
     const rangeLabel = range === 'all' ? 'All Time' : `Last ${range} Days`;
     
     doc.setFontSize(20);
-    doc.text('Rental Pro - Financial Report', 14, 22);
+    doc.text(settings?.company_name || 'Rental Pro - Financial Report', 14, 22);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    if (settings?.phone) doc.text(`Phone: ${settings.phone}`, 14, 28);
+    if (settings?.email) doc.text(`Email: ${settings.email}`, 14, 33);
+    if (settings?.address) doc.text(`Address: ${settings.address}`, 14, 38);
     
     doc.setFontSize(12);
-    doc.setTextColor(100);
-    doc.text(`Period: ${rangeLabel}`, 14, 30);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 36);
+    doc.setTextColor(50);
+    doc.text(`Period: ${rangeLabel}`, 14, 48);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 54);
 
     doc.setFontSize(14);
     doc.setTextColor(0);
-    doc.text('Summary', 14, 46);
+    doc.text('Summary', 14, 64);
     
     doc.setFontSize(10);
-    doc.text(`Total Collected: KES ${stats.totalRevenue.toLocaleString()}`, 14, 52);
-    doc.text(`Outstanding Balance: KES ${stats.totalBalance.toLocaleString()}`, 14, 58);
-    doc.text(`Total Transactions: ${filteredPayments.length}`, 100, 52);
-    doc.text(`Active Tenants: ${tenants.length}`, 100, 58);
+    doc.text(`Total Collected: KES ${stats.totalRevenue.toLocaleString()}`, 14, 70);
+    doc.text(`Outstanding Balance: KES ${stats.totalBalance.toLocaleString()}`, 14, 76);
+    doc.text(`Total Transactions: ${filteredPayments.length}`, 100, 70);
+    doc.text(`Active Tenants: ${tenants.length}`, 100, 76);
 
     doc.setFontSize(14);
-    doc.text('Collection by Property', 14, 68);
+    doc.text('Collection by Property', 14, 86);
     
     const propData = stats.perProperty.map(p => [
       p.name, 
@@ -88,7 +97,7 @@ export default function ReportsPage() {
     ]);
     
     autoTable(doc, {
-      startY: 72,
+      startY: 90,
       head: [['Property', 'Revenue Collected']],
       body: propData,
       theme: 'grid',
@@ -121,7 +130,33 @@ export default function ReportsPage() {
       headStyles: { fillColor: [108, 99, 255] }
     });
 
-    doc.save(`rental-pro-report-${new Date().getTime()}.pdf`);
+    const fileName = `rental-pro-report-${new Date().getTime()}.pdf`;
+
+    import('@capacitor/core').then(({ Capacitor }) => {
+      if (Capacitor.isNativePlatform()) {
+        const pdfBase64 = doc.output('datauristring').split(',')[1];
+        import('@capacitor/filesystem').then(({ Filesystem, Directory }) => {
+          Filesystem.writeFile({
+            path: fileName,
+            data: pdfBase64,
+            directory: Directory.Cache
+          }).then(savedFile => {
+            import('@capacitor/share').then(({ Share }) => {
+              Share.share({
+                title: 'Financial Report',
+                url: savedFile.uri,
+                dialogTitle: 'Share or Save PDF Report'
+              });
+            });
+          }).catch(e => {
+            console.error('Error saving PDF', e);
+            alert('Failed to save PDF on mobile.');
+          });
+        });
+      } else {
+        doc.save(fileName);
+      }
+    });
   };
 
   return (

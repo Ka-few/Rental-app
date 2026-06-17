@@ -34,6 +34,13 @@ export class DatabaseService {
       // Execute the schema initialization
       await this.db.execute(databaseSchema);
 
+      // Migrations for existing databases
+      try {
+        await this.db.execute(`ALTER TABLE tenants ADD COLUMN status TEXT DEFAULT 'Active'`);
+      } catch (e) {
+        // Column likely already exists, ignore
+      }
+
       if (Capacitor.getPlatform() === 'web') {
         await this.sqlite.saveToStore('rental_db');
       }

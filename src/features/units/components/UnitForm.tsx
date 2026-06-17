@@ -89,6 +89,9 @@ export const UnitForm: React.FC<UnitFormProps> = ({ initialData, onSubmit, onCan
             { value: '2 Bedroom', label: '2 Bedroom' },
             { value: '3 Bedroom', label: '3 Bedroom' },
             { value: 'Shop', label: 'Shop' },
+            { value: 'Front unit', label: 'Front unit' },
+            { value: 'Inner unit', label: 'Inner unit' },
+            { value: 'Back unit', label: 'Back unit' },
           ]}
         />
       </div>

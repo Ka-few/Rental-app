@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building, DoorOpen, Users, Banknote, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Building, DoorOpen, Users, Banknote, BarChart3, Settings } from 'lucide-react';
 import styles from './MainLayout.module.css';
 
 const navItems = [
@@ -9,6 +9,7 @@ const navItems = [
   { path: '/tenants', label: 'Tenants', icon: <Users size={24} /> },
   { path: '/payments', label: 'Payments', icon: <Banknote size={24} /> },
   { path: '/reports', label: 'Reports', icon: <BarChart3 size={24} /> },
+  { path: '/settings', label: 'Settings', icon: <Settings size={24} /> },
 ];
 
 export default function MainLayout() {

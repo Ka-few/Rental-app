@@ -61,6 +61,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, onSubmi
           { value: 'Flats', label: 'Flats' },
           { value: 'Bedsitter block', label: 'Bedsitter block' },
           { value: 'Mixed units', label: 'Mixed units' },
+          { value: 'Commercial Property', label: 'Commercial Property' },
         ]}
       />
 

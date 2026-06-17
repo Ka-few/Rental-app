@@ -51,6 +51,13 @@ export const propertyApi = {
     const db = dbService.getDb();
     if (!db) return false;
     try {
+      const unitsRes = await db.query('SELECT id FROM units WHERE property_id = ?', [id]);
+      const units = unitsRes.values || [];
+      for (const u of units) {
+        await db.run('DELETE FROM payments WHERE unit_id = ?', [u.id]);
+        await db.run('DELETE FROM tenant_allocations WHERE unit_id = ?', [u.id]);
+      }
+      await db.run('DELETE FROM units WHERE property_id = ?', [id]);
       await db.run('DELETE FROM properties WHERE id = ?', [id]);
       return true;
     } catch (error) {

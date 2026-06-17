@@ -1,7 +1,7 @@
 import React from 'react';
 import type {  Payment  } from "../types";
 import { Card } from '../../../components/Card';
-import { Banknote, Pencil, Trash2, Calendar } from 'lucide-react';
+import { Banknote, Pencil, Trash2, Calendar, Download } from 'lucide-react';
 import styles from './PaymentList.module.css';
 import { useAppSelector } from '../../../store/hooks';
 
@@ -9,9 +9,10 @@ interface PaymentListProps {
   payments: Payment[];
   onEdit?: (payment: Payment) => void;
   onDelete?: (payment: Payment) => void;
+  onGenerateReceipt?: (payment: Payment) => void;
 }
 
-export const PaymentList: React.FC<PaymentListProps> = ({ payments, onEdit, onDelete }) => {
+export const PaymentList: React.FC<PaymentListProps> = ({ payments, onEdit, onDelete, onGenerateReceipt }) => {
   const { tenants } = useAppSelector(state => state.tenants);
   const { units } = useAppSelector(state => state.units);
 
@@ -42,6 +43,13 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments, onEdit, onDe
                 </span>
               </div>
               <div className={styles.actions}>
+                <button 
+                  className={styles.iconButton} 
+                  onClick={() => onGenerateReceipt?.(payment)}
+                  title="Generate Receipt"
+                >
+                  <Download size={18} />
+                </button>
                 <button 
                   className={styles.iconButton} 
                   onClick={() => onEdit?.(payment)}

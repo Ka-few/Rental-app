@@ -67,6 +67,8 @@ export const unitApi = {
     const db = dbService.getDb();
     if (!db) return false;
     try {
+      await db.run('DELETE FROM payments WHERE unit_id = ?', [id]);
+      await db.run('DELETE FROM tenant_allocations WHERE unit_id = ?', [id]);
       await db.run('DELETE FROM units WHERE id = ?', [id]);
       return true;
     } catch (error) {

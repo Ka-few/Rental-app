@@ -16,6 +16,8 @@ import PaymentsPage from './features/payments/pages/PaymentsPage';
 import DashboardPage from './features/dashboard/pages/DashboardPage';
 import ReportsPage from './features/reports/pages/ReportsPage';
 
+import SettingsPage from './features/settings/pages/SettingsPage';
+
 function App() {
   const [dbInitialized, setDbInitialized] = useState(false);
   const [dbError, setDbError] = useState(false);
@@ -59,6 +61,7 @@ function App() {
             <Route path="tenants" element={<TenantsPage />} />
             <Route path="payments" element={<PaymentsPage />} />
             <Route path="reports" element={<ReportsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -3,6 +3,7 @@ import propertyReducer from '../features/properties/slices/propertySlice';
 import unitReducer from '../features/units/slices/unitSlice';
 import tenantReducer from '../features/tenants/slices/tenantSlice';
 import paymentReducer from '../features/payments/slices/paymentSlice';
+import settingsReducer from '../features/settings/slices/settingsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     units: unitReducer,
     tenants: tenantReducer,
     payments: paymentReducer,
+    settings: settingsReducer,
   },
 });
 

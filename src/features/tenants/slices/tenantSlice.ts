@@ -47,6 +47,14 @@ export const allocateTenant = createAsyncThunk(
   }
 );
 
+export const fetchAllocations = createAsyncThunk(
+  'tenants/fetchAllocations',
+  async () => {
+    const data = await tenantApi.getAllocations();
+    return data;
+  }
+);
+
 export const editTenant = createAsyncThunk(
   'tenants/editTenant',
   async ({ id, data }: { id: string; data: Partial<CreateTenantInput> }) => {
@@ -62,6 +70,18 @@ export const removeTenant = createAsyncThunk(
     const success = await tenantApi.deleteTenant(id);
     if (!success) throw new Error('Failed to delete tenant');
     return id;
+  }
+);
+
+export const moveOutTenant = createAsyncThunk(
+  'tenants/moveOutTenant',
+  async ({ tenantId, unitId, allocationId }: { tenantId: string; unitId: string; allocationId: string }, { dispatch }) => {
+    const success = await tenantApi.moveOutTenant(tenantId, unitId, allocationId);
+    if (!success) throw new Error('Failed to move out tenant');
+    dispatch(fetchTenants());
+    dispatch(fetchAllocations());
+    dispatch(fetchUnits());
+    return { tenantId, unitId, allocationId };
   }
 );
 
@@ -96,6 +116,9 @@ const tenantSlice = createSlice({
       })
       .addCase(allocateTenant.fulfilled, (state, action) => {
         state.allocations.unshift(action.payload);
+      })
+      .addCase(fetchAllocations.fulfilled, (state, action) => {
+        state.allocations = action.payload;
       });
   },
 });
