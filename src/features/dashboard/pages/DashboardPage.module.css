@@ -38,11 +38,12 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   border-top: 4px solid var(--color-primary);
-  padding: var(--spacing-5);
+  padding: var(--spacing-4) var(--spacing-5);
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
 }
 
 .kpiCard:hover {
@@ -50,15 +51,36 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
+.kpiCard.clickable {
+  cursor: pointer;
+}
+
+.kpiCard.kpiAlert {
+  background: rgba(231, 76, 60, 0.04);
+  border-color: rgba(231, 76, 60, 0.2);
+}
+
+.kpiArrow {
+  position: absolute;
+  right: var(--spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.kpiCard.clickable:hover .kpiArrow {
+  opacity: 1;
+}
+
 .kpiIcon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 1.4rem;
 }
 
 .kpiContent {
@@ -66,6 +88,7 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex: 1;
 }
 
 .kpiLabel {
@@ -81,11 +104,17 @@
   font-weight: 700;
   color: var(--color-text-main);
   line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kpiSub {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Charts Row */
@@ -113,6 +142,9 @@
   font-size: var(--font-size-base);
   font-weight: 600;
   color: var(--color-text-main);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
 }
 
 .emptyChart {
@@ -129,6 +161,11 @@
   border: 1px solid var(--color-border);
   padding: var(--spacing-5);
   overflow: hidden;
+}
+
+.alertCard {
+  border-color: rgba(231, 76, 60, 0.3);
+  border-left: 4px solid #E74C3C;
 }
 
 .tableWrapper {
@@ -181,11 +218,29 @@
   font-weight: 600;
 }
 
+.clear {
+  color: var(--color-success);
+  font-weight: 500;
+}
+
 .badge {
   padding: 2px 8px;
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: 600;
+}
+
+.badgeCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5A623;
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 1px 8px;
+  margin-left: var(--spacing-2);
 }
 
 .vacant {
