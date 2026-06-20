@@ -13,13 +13,15 @@ import styles from './PaymentForm.module.css';
 const paymentSchema = z.object({
   tenant_id: z.string().min(1, 'Tenant is required'),
   unit_id: z.string().min(1, 'Unit is required'),
-  payment_type: z.enum(['Rent', 'Water', 'Garbage', 'Deposit', 'Other']),
+  payment_types: z.array(z.string()).min(1, 'Select at least one payment type'),
   amount_paid: z.number().min(1, 'Amount must be greater than 0'),
   balance: z.number(),
   payment_method: z.enum(['Cash', 'M-Pesa', 'Bank']),
   payment_date: z.number(),
   notes: z.string().optional(),
 });
+
+type PaymentFormData = z.infer<typeof paymentSchema>;
 
 interface PaymentFormProps {
   initialData?: Payment;
@@ -35,17 +37,18 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
 
   useEffect(() => {
     if (tenants.length === 0) dispatch(fetchTenants());
-    if (units.length === 0) dispatch(fetchUnits());
+    if (units.length === 0) dispatch(fetchUnits(undefined));
   }, [dispatch, tenants.length, units.length]);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<CreatePaymentInput>({
+  const { register, handleSubmit, formState: { errors } } = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
     defaultValues: initialData ? {
       ...initialData,
+      payment_types: initialData.payment_type ? initialData.payment_type.split(', ') : ['Rent'],
     } : {
       tenant_id: '',
       unit_id: '',
-      payment_type: 'Rent',
+      payment_types: ['Rent'],
       amount_paid: 0,
       balance: 0,
       payment_method: 'M-Pesa',
@@ -54,8 +57,17 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
     }
   });
 
+  const handleFormSubmit = (data: PaymentFormData) => {
+    const { payment_types, notes, ...rest } = data;
+    onSubmit({
+      ...rest,
+      notes: notes || '',
+      payment_type: payment_types.join(', ')
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form onSubmit={handleSubmit(handleFormSubmit)} className={styles.form}>
       <h3 className={styles.title}>{initialData ? 'Edit Payment' : 'Record Payment'}</h3>
       
       <div className={styles.row}>
@@ -76,19 +88,22 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
       </div>
 
       <div className={styles.row}>
-        <Input 
-          label="Payment Type" 
-          type="select"
-          {...register('payment_type')} 
-          error={errors.payment_type?.message}
-          options={[
-            { value: 'Rent', label: 'Rent' },
-            { value: 'Water', label: 'Water' },
-            { value: 'Garbage', label: 'Garbage' },
-            { value: 'Deposit', label: 'Deposit' },
-            { value: 'Other', label: 'Other' },
-          ]}
-        />
+        <div className={styles.checkboxGroup}>
+          <label className={styles.checkboxGroupLabel}>Payment Types</label>
+          <div className={styles.checkboxes}>
+            {['Rent', 'Water', 'Garbage', 'Deposit', 'Other'].map(type => (
+              <label key={type} className={styles.checkboxLabel}>
+                <input 
+                  type="checkbox" 
+                  value={type} 
+                  {...register('payment_types')} 
+                />
+                {type}
+              </label>
+            ))}
+          </div>
+          {errors.payment_types && <span className={styles.errorText}>{errors.payment_types.message}</span>}
+        </div>
         <Input 
           label="Payment Method" 
           type="select"

@@ -24,10 +24,10 @@ export default function PaymentsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchPayments());
+    dispatch(fetchPayments(undefined));
     dispatch(fetchSettings());
     if (tenants.length === 0) dispatch(fetchTenants());
-    if (units.length === 0) dispatch(fetchUnits());
+    if (units.length === 0) dispatch(fetchUnits(undefined));
   }, [dispatch, tenants.length, units.length]);
 
   const handleOpenAddForm = () => {
@@ -97,11 +97,15 @@ export default function PaymentsPage() {
     doc.text(`Tenant: ${tenantName}`, 14, 72);
     doc.text(`Unit: ${unitNumber}`, 14, 78);
 
+    const paymentTypes = payment.payment_type.includes(',') 
+      ? payment.payment_type.split(', ').join(' & ') + ' Payments'
+      : payment.payment_type + ' Payment';
+
     autoTable(doc, {
       startY: 85,
       head: [['Description', 'Amount']],
       body: [
-        [payment.payment_type + ' Payment via ' + payment.payment_method, `KES ${payment.amount_paid.toLocaleString()}`]
+        [`${paymentTypes} via ${payment.payment_method}`, `KES ${payment.amount_paid.toLocaleString()}`]
       ],
       theme: 'grid',
       headStyles: { fillColor: [108, 99, 255] }

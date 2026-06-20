@@ -33,13 +33,18 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments, onEdit, onDe
         const unitNumber = units.find(u => u.id === payment.unit_id)?.unit_number || 'Unknown Unit';
         const dateStr = new Date(payment.payment_date).toLocaleDateString();
 
+        const paymentTypes = payment.payment_type.includes(',') 
+          ? payment.payment_type.split(', ').join(' & ') 
+          : payment.payment_type;
+        const mainType = payment.payment_type.split(',')[0].trim();
+
         return (
           <Card key={payment.id} className={styles.paymentCard}>
             <div className={styles.cardHeader}>
               <div className={styles.headerLeft}>
                 <h4 className={styles.amount}>KES {payment.amount_paid.toLocaleString()}</h4>
-                <span className={`${styles.statusBadge} ${styles[payment.payment_type]}`}>
-                  {payment.payment_type}
+                <span className={`${styles.statusBadge} ${styles[mainType] || ''}`}>
+                  {paymentTypes}
                 </span>
               </div>
               <div className={styles.actions}>

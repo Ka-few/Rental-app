@@ -2,7 +2,7 @@ export interface Payment {
   id: string;
   tenant_id: string;
   unit_id: string;
-  payment_type: 'Rent' | 'Water' | 'Garbage' | 'Deposit' | 'Other';
+  payment_type: string;
   amount_paid: number;
   balance: number;
   payment_method: 'Cash' | 'M-Pesa' | 'Bank';

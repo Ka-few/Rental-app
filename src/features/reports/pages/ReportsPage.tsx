@@ -28,9 +28,9 @@ export default function ReportsPage() {
 
   useEffect(() => {
     dispatch(fetchProperties());
-    dispatch(fetchUnits());
+    dispatch(fetchUnits(undefined));
     dispatch(fetchTenants());
-    dispatch(fetchPayments());
+    dispatch(fetchPayments(undefined));
     dispatch(fetchSettings());
   }, [dispatch]);
 
