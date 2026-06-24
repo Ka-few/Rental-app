@@ -97,16 +97,27 @@ export default function PaymentsPage() {
     doc.text(`Tenant: ${tenantName}`, 14, 72);
     doc.text(`Unit: ${unitNumber}`, 14, 78);
 
-    const paymentTypes = payment.payment_type.includes(',') 
-      ? payment.payment_type.split(', ').join(' & ') + ' Payments'
-      : payment.payment_type + ' Payment';
+    const body: string[][] = [];
+    if (payment.rent_amount > 0) body.push(['Rent Payment', `KES ${payment.rent_amount.toLocaleString()}`]);
+    if (payment.water_amount > 0) body.push(['Water Payment', `KES ${payment.water_amount.toLocaleString()}`]);
+    if (payment.garbage_amount > 0) body.push(['Garbage Payment', `KES ${payment.garbage_amount.toLocaleString()}`]);
+    if (payment.deposit_amount > 0) body.push(['Deposit Payment', `KES ${payment.deposit_amount.toLocaleString()}`]);
+    if (payment.other_amount > 0) body.push(['Other Payment', `KES ${payment.other_amount.toLocaleString()}`]);
+    
+    if (body.length === 0) {
+      // Fallback for old payments without breakdown
+      const paymentTypes = payment.payment_type.includes(',') 
+        ? payment.payment_type.split(', ').join(' & ') + ' Payments'
+        : payment.payment_type + ' Payment';
+      body.push([`${paymentTypes} via ${payment.payment_method}`, `KES ${payment.amount_paid.toLocaleString()}`]);
+    } else if (body.length >= 1) {
+      body.push([`Total Paid via ${payment.payment_method}`, `KES ${payment.amount_paid.toLocaleString()}`]);
+    }
 
     autoTable(doc, {
       startY: 85,
       head: [['Description', 'Amount']],
-      body: [
-        [`${paymentTypes} via ${payment.payment_method}`, `KES ${payment.amount_paid.toLocaleString()}`]
-      ],
+      body: body,
       theme: 'grid',
       headStyles: { fillColor: [108, 99, 255] }
     });

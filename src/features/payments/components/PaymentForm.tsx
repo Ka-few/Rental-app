@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '../../../components/Input';
@@ -13,8 +13,12 @@ import styles from './PaymentForm.module.css';
 const paymentSchema = z.object({
   tenant_id: z.string().min(1, 'Tenant is required'),
   unit_id: z.string().min(1, 'Unit is required'),
-  payment_types: z.array(z.string()).min(1, 'Select at least one payment type'),
-  amount_paid: z.number().min(1, 'Amount must be greater than 0'),
+  rent_amount: z.number().min(0).optional(),
+  water_amount: z.number().min(0).optional(),
+  garbage_amount: z.number().min(0).optional(),
+  deposit_amount: z.number().min(0).optional(),
+  other_amount: z.number().min(0).optional(),
+  amount_paid: z.number().min(1, 'Total Amount must be greater than 0'),
   balance: z.number(),
   payment_method: z.enum(['Cash', 'M-Pesa', 'Bank']),
   payment_date: z.number(),
@@ -40,15 +44,18 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
     if (units.length === 0) dispatch(fetchUnits(undefined));
   }, [dispatch, tenants.length, units.length]);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<PaymentFormData>({
+  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
     defaultValues: initialData ? {
       ...initialData,
-      payment_types: initialData.payment_type ? initialData.payment_type.split(', ') : ['Rent'],
     } : {
       tenant_id: '',
       unit_id: '',
-      payment_types: ['Rent'],
+      rent_amount: 0,
+      water_amount: 0,
+      garbage_amount: 0,
+      deposit_amount: 0,
+      other_amount: 0,
       amount_paid: 0,
       balance: 0,
       payment_method: 'M-Pesa',
@@ -57,12 +64,36 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
     }
   });
 
+  const rent = useWatch({ control, name: 'rent_amount' }) || 0;
+  const water = useWatch({ control, name: 'water_amount' }) || 0;
+  const garbage = useWatch({ control, name: 'garbage_amount' }) || 0;
+  const deposit = useWatch({ control, name: 'deposit_amount' }) || 0;
+  const other = useWatch({ control, name: 'other_amount' }) || 0;
+
+  useEffect(() => {
+    const total = (Number(rent) || 0) + (Number(water) || 0) + (Number(garbage) || 0) + (Number(deposit) || 0) + (Number(other) || 0);
+    setValue('amount_paid', total);
+  }, [rent, water, garbage, deposit, other, setValue]);
+
   const handleFormSubmit = (data: PaymentFormData) => {
-    const { payment_types, notes, ...rest } = data;
+    const { notes, ...rest } = data;
+    
+    const types: string[] = [];
+    if (data.rent_amount && data.rent_amount > 0) types.push('Rent');
+    if (data.water_amount && data.water_amount > 0) types.push('Water');
+    if (data.garbage_amount && data.garbage_amount > 0) types.push('Garbage');
+    if (data.deposit_amount && data.deposit_amount > 0) types.push('Deposit');
+    if (data.other_amount && data.other_amount > 0) types.push('Other');
+
     onSubmit({
       ...rest,
       notes: notes || '',
-      payment_type: payment_types.join(', ')
+      payment_type: types.length > 0 ? types.join(', ') : 'Unknown',
+      rent_amount: data.rent_amount || 0,
+      water_amount: data.water_amount || 0,
+      garbage_amount: data.garbage_amount || 0,
+      deposit_amount: data.deposit_amount || 0,
+      other_amount: data.other_amount || 0,
     });
   };
 
@@ -88,22 +119,42 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
       </div>
 
       <div className={styles.row}>
-        <div className={styles.checkboxGroup}>
-          <label className={styles.checkboxGroupLabel}>Payment Types</label>
-          <div className={styles.checkboxes}>
-            {['Rent', 'Water', 'Garbage', 'Deposit', 'Other'].map(type => (
-              <label key={type} className={styles.checkboxLabel}>
-                <input 
-                  type="checkbox" 
-                  value={type} 
-                  {...register('payment_types')} 
-                />
-                {type}
-              </label>
-            ))}
-          </div>
-          {errors.payment_types && <span className={styles.errorText}>{errors.payment_types.message}</span>}
-        </div>
+        <Input 
+          label="Rent Amount (KES)" 
+          type="number"
+          {...register('rent_amount', { valueAsNumber: true })} 
+          error={errors.rent_amount?.message} 
+        />
+        <Input 
+          label="Water Amount (KES)" 
+          type="number"
+          {...register('water_amount', { valueAsNumber: true })} 
+          error={errors.water_amount?.message} 
+        />
+      </div>
+
+      <div className={styles.row}>
+        <Input 
+          label="Garbage Amount (KES)" 
+          type="number"
+          {...register('garbage_amount', { valueAsNumber: true })} 
+          error={errors.garbage_amount?.message} 
+        />
+        <Input 
+          label="Deposit Amount (KES)" 
+          type="number"
+          {...register('deposit_amount', { valueAsNumber: true })} 
+          error={errors.deposit_amount?.message} 
+        />
+      </div>
+
+      <div className={styles.row}>
+        <Input 
+          label="Other Amount (KES)" 
+          type="number"
+          {...register('other_amount', { valueAsNumber: true })} 
+          error={errors.other_amount?.message} 
+        />
         <Input 
           label="Payment Method" 
           type="select"
@@ -119,10 +170,11 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
 
       <div className={styles.row}>
         <Input 
-          label="Amount Paid (KES)" 
+          label="Total Amount Paid (KES)" 
           type="number"
           {...register('amount_paid', { valueAsNumber: true })} 
           error={errors.amount_paid?.message} 
+          disabled // calculated automatically
         />
         <Input 
           label="Remaining Balance (KES)" 
@@ -140,8 +192,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ initialData, onSubmit,
         placeholder="Receipt number or details"
       />
 
-      {/* Hidden date input for now, we just use Date.now() on creation. 
-          If user wants to edit date later, we can add a date picker */}
       <input type="hidden" {...register('payment_date', { valueAsNumber: true })} />
 
       <div className={styles.actions}>

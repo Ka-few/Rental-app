@@ -25,8 +25,8 @@ export const paymentApi = {
     if (!db) return null;
     const id = uuidv4();
     const now = Date.now();
-    const query = 'INSERT INTO payments (id, tenant_id, unit_id, payment_type, amount_paid, balance, payment_method, payment_date, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const values = [id, data.tenant_id, data.unit_id, data.payment_type, data.amount_paid, data.balance, data.payment_method, data.payment_date, data.notes || '', now];
+    const query = 'INSERT INTO payments (id, tenant_id, unit_id, payment_type, rent_amount, water_amount, garbage_amount, deposit_amount, other_amount, amount_paid, balance, payment_method, payment_date, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const values = [id, data.tenant_id, data.unit_id, data.payment_type, data.rent_amount || 0, data.water_amount || 0, data.garbage_amount || 0, data.deposit_amount || 0, data.other_amount || 0, data.amount_paid, data.balance, data.payment_method, data.payment_date, data.notes || '', now];
     try {
       await db.run(query, values);
       return { id, ...data, created_at: now };
@@ -39,8 +39,8 @@ export const paymentApi = {
   async updatePayment(id: string, data: Partial<CreatePaymentInput>): Promise<Payment | null> {
     const db = dbService.getDb();
     if (!db) return null;
-    const query = 'UPDATE payments SET tenant_id = ?, unit_id = ?, payment_type = ?, amount_paid = ?, balance = ?, payment_method = ?, payment_date = ?, notes = ? WHERE id = ?';
-    const values = [data.tenant_id, data.unit_id, data.payment_type, data.amount_paid, data.balance, data.payment_method, data.payment_date, data.notes || '', id];
+    const query = 'UPDATE payments SET tenant_id = ?, unit_id = ?, payment_type = ?, rent_amount = ?, water_amount = ?, garbage_amount = ?, deposit_amount = ?, other_amount = ?, amount_paid = ?, balance = ?, payment_method = ?, payment_date = ?, notes = ? WHERE id = ?';
+    const values = [data.tenant_id, data.unit_id, data.payment_type, data.rent_amount || 0, data.water_amount || 0, data.garbage_amount || 0, data.deposit_amount || 0, data.other_amount || 0, data.amount_paid, data.balance, data.payment_method, data.payment_date, data.notes || '', id];
     try {
       await db.run(query, values);
       const updated = await db.query('SELECT * FROM payments WHERE id = ?', [id]);

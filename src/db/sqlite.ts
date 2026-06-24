@@ -40,6 +40,18 @@ export class DatabaseService {
       } catch (e) {
         // Column likely already exists, ignore
       }
+      
+      try {
+        await this.db.execute(`
+          ALTER TABLE payments ADD COLUMN rent_amount REAL DEFAULT 0;
+          ALTER TABLE payments ADD COLUMN water_amount REAL DEFAULT 0;
+          ALTER TABLE payments ADD COLUMN garbage_amount REAL DEFAULT 0;
+          ALTER TABLE payments ADD COLUMN deposit_amount REAL DEFAULT 0;
+          ALTER TABLE payments ADD COLUMN other_amount REAL DEFAULT 0;
+        `);
+      } catch (e) {
+        // Columns might already exist, ignore
+      }
 
       if (Capacitor.getPlatform() === 'web') {
         await this.sqlite.saveToStore('rental_db');
